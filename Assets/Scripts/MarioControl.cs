@@ -18,17 +18,16 @@ public class MarioControl : MonoBehaviour {
 	private bool grounded = false;
 	private Animator anim;
 	private Collider2D climbingLadder;
-	private Transform bottomTransform;
+	private Vector3 bottomPosition;
 	private SpriteRenderer gameOverSprite;
+	private float spriteHeight;
 
 	void Awake() {
 
+		spriteHeight = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
+
 		anim = GetComponent<Animator>();
-		GameObject bottomPos = new GameObject();
-		bottomPos.transform.parent = transform;
-		bottomPos.transform.localPosition = new Vector3(0, -0.07980061f, 0);
-		bottomPos.name = "BottomPos";
-		bottomTransform = bottomPos.transform;
+		bottomPosition = new Vector3(0, -spriteHeight*0.5f, 0);
 
 		if (GameObject.Find("DonkeyKong") != null) barrelSpawner = GameObject.Find("DonkeyKong").GetComponent<BarrelSpawner>();
 		soundEffectPlayer = gameObject.AddComponent<SoundEffectPlayer>();
@@ -41,13 +40,19 @@ public class MarioControl : MonoBehaviour {
 
 		if (isDead) return;
 
-		grounded = Physics2D.Raycast(bottomTransform.position, new Vector2(0, -1), 0.1f, 1 << LayerMask.NameToLayer("Ground"));  
+		grounded = Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y - spriteHeight*0.5f, 0), new Vector2(0, -1), 0.1f, 1 << LayerMask.NameToLayer("Ground"));  
 
 		// If the jump button is pressed and the player is grounded then the player should jump
 		if(Input.GetButtonDown("Jump") && grounded && !isJumping)
 			shouldJump = true;
 		else if (Input.GetAxis("Vertical") != 0 && climbingLadder == null) {
-			climbingLadder = FindLadderInDirection((int)Mathf.Sign(Input.GetAxis("Vertical")), 0.02f); 
+
+			int climbingDir = (int)Mathf.Sign(Input.GetAxis("Vertical"));
+			float lookDistance;
+			if (climbingDir > 0) lookDistance = spriteHeight*0.5f;
+			else lookDistance = spriteHeight*0.2f;
+
+			climbingLadder = FindLadderInDirection(climbingDir, lookDistance);
 			if (climbingLadder != null) {
 				rigidbody2D.isKinematic = true;
 			}
@@ -70,7 +75,7 @@ public class MarioControl : MonoBehaviour {
 
 			float dir = v == 0 ? 0 : Mathf.Sign(v);
 
-			Collider2D ladder = FindLadderInDirection((int)dir, maxSpeed * 0.5f);
+			Collider2D ladder = FindLadderInDirection((int)dir, spriteHeight*0.2f);
 			if (ladder != climbingLadder) {
 				if (grounded) {
 					climbingLadder = null;
@@ -139,7 +144,7 @@ public class MarioControl : MonoBehaviour {
 
 	Collider2D FindLadderInDirection(int dir, float distance) {
 
-		RaycastHit2D hit = Physics2D.Raycast(bottomTransform.position, new Vector2(0, dir), distance, 1 << LayerMask.NameToLayer("Ladder"));  
+		RaycastHit2D hit = Physics2D.Raycast(transform.position+bottomPosition, new Vector2(0, dir), distance, 1 << LayerMask.NameToLayer("Ladder"));  
 		return hit.collider;
 	}
 

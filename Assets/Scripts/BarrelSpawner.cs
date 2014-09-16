@@ -4,13 +4,13 @@ using System.Collections;
 public class BarrelSpawner : MonoBehaviour {
 
 	Animator anim;
-	Transform barrelPos;
+	Transform barrelSpawnPos;
 	bool spawnerActive = true;
 
 	void Start () {
 
 		anim = gameObject.GetComponent<Animator>();
-		barrelPos = gameObject.transform.FindChild("BarrelPos");
+		barrelSpawnPos = gameObject.transform.FindChild("BarrelSpawnPos");
 		StartCoroutine(SpawnBarrel(1.0f));
 	}
 	
@@ -18,22 +18,19 @@ public class BarrelSpawner : MonoBehaviour {
 
 		yield return new WaitForSeconds(delay);
 
-		if (spawnerActive) {
-			anim.SetTrigger("ThrowBarrel");
-
-			StartCoroutine(SpawnBarrel(6.0f));
-		}
+		anim.SetTrigger("ThrowBarrel");
+		StartCoroutine(SpawnBarrel(6.0f));
 	}
 
 	public void ReleaseBarrel() {
 
 		GameObject barrel = Instantiate(Resources.Load ("BarrelPrefab")) as GameObject;
 		barrel.transform.parent = transform;
-		barrel.transform.localPosition = barrelPos.localPosition;
+		barrel.transform.localPosition = barrelSpawnPos.localPosition;
 		barrel.name = "Barrel";
 	}
 
 	public void Stop() {
-		spawnerActive = false;
+		Destroy (this);
 	}
 }
