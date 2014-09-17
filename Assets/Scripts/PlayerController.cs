@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour {
 				rigidbody2D.velocity = Vector2.zero;
 			}
 
-			if (Mathf.Abs (horizontalInput) > 0.0f && isOnGround) {
+			if (Mathf.Abs (horizontalInput) > 0.0f && isOnGround && rigidbody2D.velocity.y == 0) {
 				SwitchToState(State.Walking);
 			}
 
@@ -125,9 +125,13 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		// Update the animation state
-//		if (anim != null) anim.SetFloat("Speed", Mathf.Abs(h));
-//		if (anim != null) anim.SetBool("Jumping", isJumping);
-//		if (anim != null) anim.SetBool("Climbing", climbingLadder != null);
+		if (anim != null) {
+			anim.SetBool("Idle", currentState == State.Idle);
+			anim.SetBool("Walking", currentState == State.Walking);
+			anim.SetBool("Jumping", currentState == State.Jumping);
+
+			anim.SetBool("Climbing", currentState == State.Climbing);
+		}
 
 	}
 
