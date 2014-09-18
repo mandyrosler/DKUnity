@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		else if (nextState == State.Jumping) {
 
-			shouldJump = true;
+			shouldJump = true; 
 			soundEffectPlayer.PlayWalkEffect(false);
 			soundEffectPlayer.PlayJumpEffect();
 		}
