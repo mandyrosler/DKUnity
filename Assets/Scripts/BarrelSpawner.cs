@@ -5,7 +5,6 @@ public class BarrelSpawner : MonoBehaviour {
 
 	Animator anim;
 	Transform barrelSpawnPos;
-	bool spawnerActive = true;
 
 	void Start () {
 
@@ -31,6 +30,7 @@ public class BarrelSpawner : MonoBehaviour {
 	}
 
 	public void Stop() {
+		anim.StopPlayback();
 		Destroy (this);
 	}
 }

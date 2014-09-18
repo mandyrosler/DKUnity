@@ -18,11 +18,9 @@ public class BarrelAI : MonoBehaviour {
 		float force = 150.0f;
 
 		if (collision.collider.gameObject.name == "InvisibleWallLeft") {
-			//rigidbody2D.AddForce(new Vector2(force, 0.0f));
 			dir = 1;
 		}
 		else if (collision.collider.gameObject.name == "InvisibleWallRight") {
-			//rigidbody2D.AddForce(new Vector2(force*-1.0f, 0.0f));
 			dir = -1;
 		}
 		else if (collision.collider.gameObject.name.Contains("Floor")) {
