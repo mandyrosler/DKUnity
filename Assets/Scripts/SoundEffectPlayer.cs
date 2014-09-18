@@ -55,6 +55,7 @@ public class SoundEffectPlayer : MonoBehaviour {
 	}
 
 	public void PlayWalkEffect(bool play) {
+
 		if (play) {
 			if (!walkAudioSource.isPlaying) walkAudioSource.Play();
 		}

@@ -63,12 +63,19 @@ public class PlayerController : MonoBehaviour {
 			else if(horizontalInput < 0 && facingRight)
 				Flip();
 
+			// Play walking sound
+			if (direction != 0) {
+				soundEffectPlayer.PlayWalkEffect(true);
+			}
+			else soundEffectPlayer.PlayWalkEffect(false);
+
+			// Check if we should switch state
 			if(pressedJumpButton) {
 				SwitchToState(State.Jumping);
 			}
 			else if (verticalInput != 0) {
 
-				climbingLadder = FindLadderInDirection((int)Mathf.Sign(verticalInput), 0.02f);
+				climbingLadder = FindLadderInDirection((int)Mathf.Sign(verticalInput), 0.05f);
 				if (climbingLadder != null) {
 					SwitchToState(State.Climbing);
 				}
@@ -79,12 +86,6 @@ public class PlayerController : MonoBehaviour {
 			else if (direction != 0) {
 				SwitchToState(State.Walking);
 			}
-
-			// Play walking sound
-			if (direction != 0) {
-				soundEffectPlayer.PlayWalkEffect(true);
-			}
-			else soundEffectPlayer.PlayWalkEffect(false);
 		}
 
 		//-------- Jumping --------//
@@ -108,15 +109,16 @@ public class PlayerController : MonoBehaviour {
 				rigidbody2D.velocity = Vector2.zero;
 			}
 
-			if (Mathf.Abs (horizontalInput) > 0.0f && isOnGround && rigidbody2D.velocity.y == 0) {
-				SwitchToState(State.Walking);
-			}
-
 			// Play walking sound
 			if (Mathf.Abs(rigidbody2D.velocity.y) > 0.0f) {
 				soundEffectPlayer.PlayWalkEffect(true);
 			}
 			else soundEffectPlayer.PlayWalkEffect(false);
+
+			// Check if we should switch state
+			if (Mathf.Abs (horizontalInput) > 0.0f && isOnGround && rigidbody2D.velocity.y == 0) {
+				SwitchToState(State.Walking);
+			}
 		}
 
 		//-------- Dead --------//
@@ -139,8 +141,6 @@ public class PlayerController : MonoBehaviour {
 
 		if (currentState == nextState) return;
 
-		//Debug.Log("Switch to state: " + nextState + " from state " + currentState);
-
 		if (nextState == State.Idle || nextState == State.Walking) {
 
 			climbingLadder = null;
@@ -149,6 +149,7 @@ public class PlayerController : MonoBehaviour {
 		else if (nextState == State.Jumping) {
 
 			shouldJump = true;
+			soundEffectPlayer.PlayWalkEffect(false);
 			soundEffectPlayer.PlayJumpEffect();
 		}
 		else if (nextState == State.Climbing) {
