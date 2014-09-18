@@ -5,11 +5,9 @@ public class BarrelAI : MonoBehaviour {
 
 	private Collider2D currentFloor;
 	private float timeUntilFallDown = int.MaxValue;
-	private float radius;
 	private int dir;
 
 	void Start() {
-		radius = gameObject.GetComponent<CircleCollider2D>().radius;
 		dir = 1;
 	}
 
