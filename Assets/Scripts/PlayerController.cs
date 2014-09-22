@@ -57,7 +57,9 @@ public class PlayerController : MonoBehaviour {
 
 			float direction = horizontalInput == 0 ? 0 : Mathf.Sign(horizontalInput);
 			rigidbody2D.velocity = new Vector2(direction * maxSpeed, rigidbody2D.velocity.y);
-			
+
+			climbingLadder = FindLadderInDirection((int)Mathf.Sign(verticalInput), 0.05f);
+
 			if(horizontalInput > 0 && !facingRight)
 				Flip();
 			else if(horizontalInput < 0 && facingRight)
@@ -73,18 +75,17 @@ public class PlayerController : MonoBehaviour {
 			if(pressedJumpButton) {
 				SwitchToState(State.Jumping);
 			}
-			else if (verticalInput != 0) {
-
-				climbingLadder = FindLadderInDirection((int)Mathf.Sign(verticalInput), 0.05f);
-				if (climbingLadder != null) {
-					SwitchToState(State.Climbing);
-				}
+			else if (verticalInput > 0 && climbingLadder != null && (direction == 0 || bottomTransform.position.y < climbingLadder.transform.position.y)) {
+				SwitchToState(State.Climbing);
+			}
+			else if (verticalInput < 0 && climbingLadder != null && (direction == 0 || bottomTransform.position.y > climbingLadder.transform.position.y)) {
+				SwitchToState(State.Climbing);
+			}
+			else if (direction != 0 && (climbingLadder == null || (climbingLadder != null && bottomTransform.position.y > climbingLadder.transform.position.y))) {
+				SwitchToState(State.Walking);
 			}
 			else if (direction == 0) {
 				SwitchToState(State.Idle);
-			}
-			else if (direction != 0) {
-				SwitchToState(State.Walking);
 			}
 		}
 
