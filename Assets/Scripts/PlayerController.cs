@@ -219,7 +219,7 @@ public class PlayerController : MonoBehaviour {
 	
 	void OnCollisionEnter2D(Collision2D collision) {
 		
-		if (collision.collider.gameObject.name == "Barrel") {
+		if (collision.collider.gameObject.name.Contains ("Barrel")) {
 			SwitchToState(State.Dead);
 		}
 	}
